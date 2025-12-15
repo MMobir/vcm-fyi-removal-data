@@ -1,11 +1,26 @@
 name: Update Isometric Data
 
 on:
+  # Run daily at 6 AM UTC
   schedule:
-    # Run daily at 6 AM UTC
     - cron: '0 6 * * *'
+  
+  # Trigger on push to main (for manual updates)
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+      - 'removal_db_data/**'
+      - 'requirements.txt'
+      - '.github/workflows/update-data.yml'
+  
+  # Allow manual trigger from GitHub UI
   workflow_dispatch:
-    # Allow manual trigger from GitHub UI
+
+env:
+  AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+  AWS_REGION: us-east-1
 
 jobs:
   update-data:
@@ -28,6 +43,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install awscli
       
       - name: Fetch latest data from Isometric API
         run: python scripts/fetch_isometric.py
@@ -39,6 +55,24 @@ jobs:
         id: check_changes
         run: |
           git diff --quiet output/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      # Upload to AWS S3 (if secrets are configured)
+      - name: Upload to AWS S3
+        if: env.AWS_S3_BUCKET != ''
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          echo "Uploading Parquet files to S3..."
+          aws s3 cp output/credits-isometric.parquet s3://$AWS_S3_BUCKET/isometric/credits.parquet
+          aws s3 cp output/projects-isometric.parquet s3://$AWS_S3_BUCKET/isometric/projects.parquet
+          
+          # Also upload timestamped versions for history
+          TIMESTAMP=$(date -u +'%Y-%m-%d')
+          aws s3 cp output/credits-isometric.parquet s3://$AWS_S3_BUCKET/isometric/history/credits-$TIMESTAMP.parquet
+          aws s3 cp output/projects-isometric.parquet s3://$AWS_S3_BUCKET/isometric/history/projects-$TIMESTAMP.parquet
+          
+          echo "✅ Uploaded to s3://$AWS_S3_BUCKET/isometric/"
       
       - name: Commit and push if changed
         if: steps.check_changes.outputs.changed == 'true'
@@ -69,4 +103,9 @@ jobs:
           print(f'- Projects: {len(projects):,} projects')
           print(f'- Total issued: {credits[credits[\"transaction_type\"]==\"issuance\"][\"quantity\"].sum():,.0f} tonnes')
           " >> $GITHUB_STEP_SUMMARY
+          if [ -n "$AWS_S3_BUCKET" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### S3 Upload" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Uploaded to \`s3://$AWS_S3_BUCKET/isometric/\`" >> $GITHUB_STEP_SUMMARY
+          fi
 
