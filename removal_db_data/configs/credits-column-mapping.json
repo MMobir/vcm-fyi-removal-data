@@ -1,0 +1,43 @@
+{
+  "isometric": {
+    "issuances": {
+      "Project": "name",
+      "Supplier": "proponent",
+      "Pathway": "project_type",
+      "Issuance date": "transaction_date",
+      "Credit": "quantity",
+      "Vintage": "vintage",
+      "Durability": "durability",
+      "Carbon removed (tCO2e)": "quantity"
+    },
+    "retirements": {
+      "Project": "name",
+      "Supplier": "proponent",
+      "Pathway": "project_type",
+      "Retirement date": "transaction_date",
+      "Credit": "quantity",
+      "Vintage": "vintage",
+      "Retiring party": "retirement_beneficiary",
+      "Carbon removed (tCO2e)": "quantity"
+    }
+  },
+  "puro": {
+    "issuances": {
+      "Project Name": "name",
+      "Supplier": "proponent",
+      "Method": "project_type",
+      "Issue Date": "transaction_date",
+      "Quantity (tonnes CO2)": "quantity",
+      "Vintage": "vintage"
+    },
+    "retirements": {
+      "Project Name": "name",
+      "Method": "project_type",
+      "Retirement Date": "transaction_date",
+      "Quantity (tonnes CO2)": "quantity",
+      "Vintage": "vintage",
+      "Buyer": "retirement_beneficiary"
+    }
+  }
+}
+

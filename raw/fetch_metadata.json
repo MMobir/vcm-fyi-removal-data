@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-12-15T15:20:26.669979",
+  "api_endpoint": "https://edge.isometric.com/",
+  "results": {
+    "issuances": {
+      "path": "/Users/mahmoudmobir/Desktop/Work/projects/vcm.fyi/app/vcm-fyi-removal-data/raw/isometric_issuances.csv",
+      "count": 270,
+      "success": true
+    },
+    "retirements": {
+      "path": "/Users/mahmoudmobir/Desktop/Work/projects/vcm.fyi/app/vcm-fyi-removal-data/raw/isometric_retirements.csv",
+      "count": 116,
+      "success": true
+    },
+    "projects": {
+      "path": "/Users/mahmoudmobir/Desktop/Work/projects/vcm.fyi/app/vcm-fyi-removal-data/raw/isometric_projects.csv",
+      "count": 35,
+      "success": true
+    }
+  }
+}

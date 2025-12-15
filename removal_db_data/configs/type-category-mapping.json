@@ -1,0 +1,83 @@
+{
+  "bicrs": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Bio-oil Injection"
+  },
+  "biochar": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Biochar"
+  },
+  "biooil": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Bio-oil CCS"
+  },
+  "bio-oil": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Bio-oil CCS"
+  },
+  "dac": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Direct Air Capture"
+  },
+  "direct air capture": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Direct Air Capture"
+  },
+  "enhanced weathering": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Enhanced Weathering"
+  },
+  "ew": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Enhanced Weathering"
+  },
+  "marine cdr": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Ocean CDR"
+  },
+  "ocean alkalinity enhancement": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Ocean Alkalinity Enhancement"
+  },
+  "oae": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Ocean Alkalinity Enhancement"
+  },
+  "biomass burial": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Biomass Burial"
+  },
+  "geological storage": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Geological Storage"
+  },
+  "bioenergy with carbon capture": {
+    "category": "carbon-removal",
+    "project-type-display-name": "BECCS"
+  },
+  "beccs": {
+    "category": "carbon-removal",
+    "project-type-display-name": "BECCS"
+  },
+  "woody biomass": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Woody Biomass"
+  },
+  "soil carbon": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Soil Carbon"
+  },
+  "afforestation": {
+    "category": "nature-based",
+    "project-type-display-name": "Afforestation/Reforestation"
+  },
+  "reforestation": {
+    "category": "nature-based",
+    "project-type-display-name": "Afforestation/Reforestation"
+  },
+  "unknown": {
+    "category": "unknown",
+    "project-type-display-name": "Unknown"
+  }
+}
+

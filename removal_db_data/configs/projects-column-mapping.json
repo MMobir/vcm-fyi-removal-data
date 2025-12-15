@@ -1,0 +1,22 @@
+{
+  "isometric": {
+    "projects": {
+      "Project": "name",
+      "Supplier": "proponent",
+      "Pathway": "project_type",
+      "Country": "country",
+      "Status": "status",
+      "Durability": "durability"
+    }
+  },
+  "puro": {
+    "projects": {
+      "Project Name": "name",
+      "Supplier": "proponent",
+      "Method": "project_type",
+      "Country": "country",
+      "Status": "status"
+    }
+  }
+}
+

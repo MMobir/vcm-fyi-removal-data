@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vcm-fyi-removal-data"
+version = "0.1.0"
+description = "Carbon removal credits data pipeline for VCM.fyi (Isometric, Puro.earth)"
+requires-python = ">=3.11"
+dependencies = [
+    "pandas>=2.0.0",
+    "pandas-flavor>=0.6.0",
+    "pandera>=0.18.0",
+    "fastparquet>=2024.2.0",
+    "requests>=2.31.0",
+    "python-dateutil>=2.8.0",
+    "country-converter>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["removal_db_data*"]
+

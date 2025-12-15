@@ -1,0 +1,72 @@
+name: Update Isometric Data
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allow manual trigger from GitHub UI
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write  # Required to push changes
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Fetch latest data from Isometric API
+        run: python scripts/fetch_isometric.py
+      
+      - name: Process data into Parquet files
+        run: python scripts/run_pipeline.py
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet output/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add output/*.parquet
+          git add raw/*.csv
+          git add raw/fetch_metadata.json
+          git commit -m "🔄 Daily data update - $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
+      
+      - name: Summary
+        run: |
+          echo "## Data Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Files Updated" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          ls -la output/*.parquet >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Record Counts" >> $GITHUB_STEP_SUMMARY
+          python -c "
+          import pandas as pd
+          credits = pd.read_parquet('output/credits-isometric.parquet')
+          projects = pd.read_parquet('output/projects-isometric.parquet')
+          print(f'- Credits: {len(credits):,} transactions')
+          print(f'- Projects: {len(projects):,} projects')
+          print(f'- Total issued: {credits[credits[\"transaction_type\"]==\"issuance\"][\"quantity\"].sum():,.0f} tonnes')
+          " >> $GITHUB_STEP_SUMMARY
+
