@@ -110,7 +110,9 @@ jobs:
           git add raw/*.csv || true
           git add raw/fetch_metadata.json || true
           git commit -m "🔄 Daily data update - $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "Nothing to commit"
-          git push
+          # Pull with rebase to handle concurrent pushes, then push
+          git pull --rebase origin main || true
+          git push || echo "Push failed (likely concurrent update) - S3 upload already succeeded"
       
       - name: Summary
         run: |
