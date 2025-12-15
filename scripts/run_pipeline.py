@@ -1,54 +1,145 @@
 #!/usr/bin/env python3
 """
-Run the full Isometric data pipeline.
+Run the full removal data pipeline for all registries.
 
 This script orchestrates:
-1. Fetching raw CSV data from Isometric's registry
-2. Processing the data into standardized format
-3. Validating against schemas
-4. Saving to Parquet files
+1. Processing raw CSV data from each registry (Isometric, Puro.earth)
+2. Validating against schemas
+3. Saving to Parquet files
+4. Combining into unified output files
 """
 
 import argparse
 import sys
 from pathlib import Path
+from glob import glob
+
+import pandas as pd
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from removal_db_data.isometric import run_pipeline
+from removal_db_data import isometric, puro
 
 
-def find_latest_csv(raw_dir: Path, prefix: str) -> Path | None:
+def find_puro_files(raw_dir: Path) -> dict:
     """
-    Find the most recent CSV file with the given prefix.
-
-    Parameters
-    ----------
-    raw_dir : Path
-        Directory containing raw CSV files.
-    prefix : str
-        Prefix to match (e.g., 'isometric_issuances').
-
-    Returns
-    -------
-    Path | None
-        Path to the most recent matching file, or None if not found.
+    Find Puro.earth CSV files in the raw directory.
+    
+    Puro files are named like:
+    - Puro_Earth_Registry-Issuance_exports-Mon Dec 15 2025.csv
+    - Puro_Earth_Registry-Project_exports-Mon Dec 15 2025.csv
+    - Puro_Earth_Registry-Retirement_exports-Mon Dec 15 2025.csv
     """
-    pattern = f"{prefix}*.csv"
-    matching_files = list(raw_dir.glob(pattern))
+    files = {}
+    
+    # Find issuances
+    issuance_pattern = list(raw_dir.glob("Puro_Earth_Registry-Issuance*.csv"))
+    if issuance_pattern:
+        files["issuances"] = max(issuance_pattern, key=lambda p: p.stat().st_mtime)
+    
+    # Find projects
+    project_pattern = list(raw_dir.glob("Puro_Earth_Registry-Project*.csv"))
+    if project_pattern:
+        files["projects"] = max(project_pattern, key=lambda p: p.stat().st_mtime)
+    
+    # Find retirements
+    retirement_pattern = list(raw_dir.glob("Puro_Earth_Registry-Retirement*.csv"))
+    if retirement_pattern:
+        files["retirements"] = max(retirement_pattern, key=lambda p: p.stat().st_mtime)
+    
+    return files
 
-    if not matching_files:
-        return None
 
-    # Sort by modification time, return newest
-    return max(matching_files, key=lambda p: p.stat().st_mtime)
+def find_isometric_files(raw_dir: Path) -> dict:
+    """Find Isometric CSV files in the raw directory."""
+    files = {}
+    
+    issuances = raw_dir / "isometric_issuances.csv"
+    if issuances.exists():
+        files["issuances"] = issuances
+    
+    projects = raw_dir / "isometric_projects.csv"
+    if projects.exists():
+        files["projects"] = projects
+    
+    retirements = raw_dir / "isometric_retirements.csv"
+    if retirements.exists():
+        files["retirements"] = retirements
+    
+    return files
+
+
+def process_isometric(raw_dir: Path, output_dir: Path, validate: bool = True):
+    """Process Isometric data."""
+    files = find_isometric_files(raw_dir)
+    
+    if "issuances" not in files:
+        print("⚠ No Isometric issuances file found, skipping...")
+        return None, None
+    
+    print(f"\n📁 Found Isometric files:")
+    for key, path in files.items():
+        print(f"   {key}: {path.name}")
+    
+    # Create output directory for isometric
+    iso_output = output_dir / "isometric"
+    iso_output.mkdir(parents=True, exist_ok=True)
+    
+    credits, projects = isometric.run_pipeline(
+        issuances_path=files["issuances"],
+        retirements_path=files.get("retirements"),
+        projects_path=files.get("projects"),
+        output_dir=None,  # We'll save manually
+        validate_output=validate,
+    )
+    
+    # Save to registry-specific output
+    credits.to_parquet(iso_output / "credits.parquet", index=False)
+    projects.to_parquet(iso_output / "projects.parquet", index=False)
+    
+    print(f"\n✅ Saved Isometric data to {iso_output}")
+    
+    return credits, projects
+
+
+def process_puro(raw_dir: Path, output_dir: Path, validate: bool = True):
+    """Process Puro.earth data."""
+    files = find_puro_files(raw_dir)
+    
+    if "issuances" not in files:
+        print("⚠ No Puro.earth issuances file found, skipping...")
+        return None, None
+    
+    print(f"\n📁 Found Puro.earth files:")
+    for key, path in files.items():
+        print(f"   {key}: {path.name}")
+    
+    # Create output directory for puro
+    puro_output = output_dir / "puro-earth"
+    puro_output.mkdir(parents=True, exist_ok=True)
+    
+    credits, projects = puro.run_pipeline(
+        issuances_path=files["issuances"],
+        retirements_path=files.get("retirements"),
+        projects_path=files.get("projects"),
+        output_dir=None,  # We'll save manually
+        validate_output=validate,
+    )
+    
+    # Save to registry-specific output
+    credits.to_parquet(puro_output / "credits.parquet", index=False)
+    projects.to_parquet(puro_output / "projects.parquet", index=False)
+    
+    print(f"\n✅ Saved Puro.earth data to {puro_output}")
+    
+    return credits, projects
 
 
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Run the Isometric carbon removal data pipeline"
+        description="Run the carbon removal data pipeline for all registries"
     )
     parser.add_argument(
         "--raw-dir",
@@ -64,91 +155,77 @@ def main():
         help="Directory to save output Parquet files",
     )
     parser.add_argument(
-        "--issuances",
-        type=Path,
-        help="Path to specific issuances CSV (overrides auto-detection)",
-    )
-    parser.add_argument(
-        "--retirements",
-        type=Path,
-        help="Path to specific retirements CSV (overrides auto-detection)",
+        "--registry",
+        choices=["isometric", "puro-earth", "all"],
+        default="all",
+        help="Which registry to process (default: all)",
     )
     parser.add_argument(
         "--skip-validation",
         action="store_true",
         help="Skip schema validation",
     )
-    parser.add_argument(
-        "--fetch",
-        action="store_true",
-        help="Fetch fresh data before processing",
-    )
 
     args = parser.parse_args()
 
-    # Optionally fetch fresh data
-    if args.fetch:
-        print("Fetching fresh data from Isometric registry...")
-        from fetch_isometric import fetch_all
-
-        results = fetch_all(args.raw_dir, timestamp=False)
-        if not results["issuances"]["success"]:
-            print("ERROR: Failed to fetch issuances data")
-            return 1
-
-    # Find CSV files
-    issuances_path = args.issuances
-    retirements_path = args.retirements
-
-    if issuances_path is None:
-        issuances_path = find_latest_csv(args.raw_dir, "isometric_issuances")
-        if issuances_path is None:
-            print(f"ERROR: No issuances CSV found in {args.raw_dir}")
-            print("Run with --fetch to download data first, or specify --issuances path")
-            return 1
-        print(f"Auto-detected issuances: {issuances_path}")
-
-    if retirements_path is None:
-        retirements_path = find_latest_csv(args.raw_dir, "isometric_retirements")
-        if retirements_path:
-            print(f"Auto-detected retirements: {retirements_path}")
-
-    # Run the pipeline
-    try:
-        credits, projects = run_pipeline(
-            issuances_path=issuances_path,
-            retirements_path=retirements_path,
-            output_dir=args.output_dir,
-            validate_output=not args.skip_validation,
+    print("=" * 70)
+    print("Carbon Removal Data Processing Pipeline")
+    print("=" * 70)
+    print(f"\nRaw directory: {args.raw_dir}")
+    print(f"Output directory: {args.output_dir}")
+    print(f"Registry: {args.registry}")
+    
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    
+    all_credits = []
+    all_projects = []
+    
+    # Process Isometric
+    if args.registry in ["isometric", "all"]:
+        credits, projects = process_isometric(
+            args.raw_dir, args.output_dir, not args.skip_validation
         )
-
-        # Print summary
-        print("\n" + "=" * 60)
-        print("Output Summary")
-        print("=" * 60)
-        print(f"\nCredits ({len(credits):,} records):")
-        print(f"  - Issuances: {(credits['transaction_type'] == 'issuance').sum():,}")
-        print(f"  - Retirements: {(credits['transaction_type'] == 'retirement').sum():,}")
-        print(f"  - Total quantity: {credits['quantity'].sum():,.0f} tonnes")
-
-        print(f"\nProjects ({len(projects):,} records):")
-        if "category" in projects.columns:
-            print("  By category:")
-            for cat, count in projects["category"].value_counts().items():
-                print(f"    - {cat}: {count}")
-
-        print(f"\nOutput files saved to: {args.output_dir.absolute()}")
-
-        return 0
-
-    except Exception as e:
-        print(f"ERROR: Pipeline failed: {e}")
-        import traceback
-
-        traceback.print_exc()
-        return 1
+        if credits is not None:
+            all_credits.append(credits)
+            all_projects.append(projects)
+    
+    # Process Puro.earth
+    if args.registry in ["puro-earth", "all"]:
+        credits, projects = process_puro(
+            args.raw_dir, args.output_dir, not args.skip_validation
+        )
+        if credits is not None:
+            all_credits.append(credits)
+            all_projects.append(projects)
+    
+    # Print summary
+    print("\n" + "=" * 70)
+    print("PIPELINE SUMMARY")
+    print("=" * 70)
+    
+    if all_credits:
+        total_credits = sum(len(c) for c in all_credits)
+        total_projects = sum(len(p) for p in all_projects)
+        
+        print(f"\n📊 Total processed:")
+        print(f"   Credits: {total_credits:,}")
+        print(f"   Projects: {total_projects:,}")
+        
+        print(f"\n📁 Output files:")
+        for registry_dir in args.output_dir.iterdir():
+            if registry_dir.is_dir():
+                print(f"   {registry_dir.name}/")
+                for f in registry_dir.glob("*.parquet"):
+                    print(f"      - {f.name}")
+    else:
+        print("\n⚠ No data was processed!")
+    
+    print("\n" + "=" * 70)
+    print("Pipeline complete!")
+    print("=" * 70)
+    
+    return 0
 
 
 if __name__ == "__main__":
     exit(main())
-

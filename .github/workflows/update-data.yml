@@ -1,4 +1,4 @@
-name: Update Isometric Data
+name: Update Removal Data
 
 on:
   # Run daily at 5 AM UTC (before any downstream API updates)
@@ -12,6 +12,7 @@ on:
     paths:
       - 'scripts/**'
       - 'removal_db_data/**'
+      - 'raw/**'
       - 'requirements.txt'
       - '.github/workflows/update-data.yml'
   
@@ -48,64 +49,105 @@ jobs:
       - name: Fetch latest data from Isometric API
         run: python scripts/fetch_isometric.py
       
-      - name: Process data into Parquet files
-        run: python scripts/run_pipeline.py
+      - name: Process all registries into Parquet files
+        run: python scripts/run_pipeline.py --registry all
       
       - name: Check for changes
         id: check_changes
         run: |
           git diff --quiet output/ && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
       
-      # Upload to AWS S3 (if secrets are configured)
-      - name: Upload to AWS S3
+      # Upload Isometric to AWS S3
+      - name: Upload Isometric to AWS S3
         if: env.AWS_S3_BUCKET != ''
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          echo "Uploading Parquet files to S3..."
-          aws s3 cp output/credits-isometric.parquet s3://$AWS_S3_BUCKET/isometric/credits.parquet
-          aws s3 cp output/projects-isometric.parquet s3://$AWS_S3_BUCKET/isometric/projects.parquet
-          
-          # Also upload timestamped versions for history
-          TIMESTAMP=$(date -u +'%Y-%m-%d')
-          aws s3 cp output/credits-isometric.parquet s3://$AWS_S3_BUCKET/isometric/history/credits-$TIMESTAMP.parquet
-          aws s3 cp output/projects-isometric.parquet s3://$AWS_S3_BUCKET/isometric/history/projects-$TIMESTAMP.parquet
-          
-          echo "✅ Uploaded to s3://$AWS_S3_BUCKET/isometric/"
+          if [ -d "output/isometric" ]; then
+            echo "Uploading Isometric Parquet files to S3..."
+            aws s3 cp output/isometric/credits.parquet s3://$AWS_S3_BUCKET/isometric/credits.parquet
+            aws s3 cp output/isometric/projects.parquet s3://$AWS_S3_BUCKET/isometric/projects.parquet
+            
+            # Also upload timestamped versions for history
+            TIMESTAMP=$(date -u +'%Y-%m-%d')
+            aws s3 cp output/isometric/credits.parquet s3://$AWS_S3_BUCKET/isometric/history/credits-$TIMESTAMP.parquet
+            aws s3 cp output/isometric/projects.parquet s3://$AWS_S3_BUCKET/isometric/history/projects-$TIMESTAMP.parquet
+            
+            echo "✅ Uploaded Isometric to s3://$AWS_S3_BUCKET/isometric/"
+          else
+            echo "⚠ No Isometric output found, skipping S3 upload"
+          fi
+      
+      # Upload Puro.earth to AWS S3
+      - name: Upload Puro.earth to AWS S3
+        if: env.AWS_S3_BUCKET != ''
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          if [ -d "output/puro-earth" ]; then
+            echo "Uploading Puro.earth Parquet files to S3..."
+            aws s3 cp output/puro-earth/credits.parquet s3://$AWS_S3_BUCKET/puro-earth/credits.parquet
+            aws s3 cp output/puro-earth/projects.parquet s3://$AWS_S3_BUCKET/puro-earth/projects.parquet
+            
+            # Also upload timestamped versions for history
+            TIMESTAMP=$(date -u +'%Y-%m-%d')
+            aws s3 cp output/puro-earth/credits.parquet s3://$AWS_S3_BUCKET/puro-earth/history/credits-$TIMESTAMP.parquet
+            aws s3 cp output/puro-earth/projects.parquet s3://$AWS_S3_BUCKET/puro-earth/history/projects-$TIMESTAMP.parquet
+            
+            echo "✅ Uploaded Puro.earth to s3://$AWS_S3_BUCKET/puro-earth/"
+          else
+            echo "⚠ No Puro.earth output found, skipping S3 upload"
+          fi
       
       - name: Commit and push if changed
         if: steps.check_changes.outputs.changed == 'true'
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-          git add output/*.parquet
-          git add raw/*.csv
-          git add raw/fetch_metadata.json
-          git commit -m "🔄 Daily data update - $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git add output/
+          git add raw/*.csv || true
+          git add raw/fetch_metadata.json || true
+          git commit -m "🔄 Daily data update - $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "Nothing to commit"
           git push
       
       - name: Summary
         run: |
-          echo "## Data Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Removal Data Update Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Files Updated" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          ls -la output/*.parquet >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Record Counts" >> $GITHUB_STEP_SUMMARY
-          python -c "
+          
+          echo "### Registries Processed" >> $GITHUB_STEP_SUMMARY
+          
+          # Isometric
+          if [ -d "output/isometric" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "#### Isometric" >> $GITHUB_STEP_SUMMARY
+            python -c "
           import pandas as pd
-          credits = pd.read_parquet('output/credits-isometric.parquet')
-          projects = pd.read_parquet('output/projects-isometric.parquet')
+          credits = pd.read_parquet('output/isometric/credits.parquet')
+          projects = pd.read_parquet('output/isometric/projects.parquet')
           print(f'- Credits: {len(credits):,} transactions')
           print(f'- Projects: {len(projects):,} projects')
-          print(f'- Total issued: {credits[credits[\"transaction_type\"]==\"issuance\"][\"quantity\"].sum():,.0f} tonnes')
           " >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Puro.earth
+          if [ -d "output/puro-earth" ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "#### Puro.earth" >> $GITHUB_STEP_SUMMARY
+            python -c "
+          import pandas as pd
+          credits = pd.read_parquet('output/puro-earth/credits.parquet')
+          projects = pd.read_parquet('output/puro-earth/projects.parquet')
+          print(f'- Credits: {len(credits):,} transactions')
+          print(f'- Projects: {len(projects):,} projects')
+          " >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # S3 status
           if [ -n "$AWS_S3_BUCKET" ]; then
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "### S3 Upload" >> $GITHUB_STEP_SUMMARY
-            echo "✅ Uploaded to \`s3://$AWS_S3_BUCKET/isometric/\`" >> $GITHUB_STEP_SUMMARY
+            echo "### S3 Upload Status" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Data uploaded to \`s3://$AWS_S3_BUCKET/\`" >> $GITHUB_STEP_SUMMARY
           fi
-

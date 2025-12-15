@@ -7,6 +7,18 @@
     "category": "carbon-removal",
     "project-type-display-name": "Biochar"
   },
+  "carbonated materials": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Carbonated Materials"
+  },
+  "geologically stored carbon": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Geologically Stored Carbon"
+  },
+  "woody biomass burial": {
+    "category": "carbon-removal",
+    "project-type-display-name": "Woody Biomass Burial"
+  },
   "biooil": {
     "category": "carbon-removal",
     "project-type-display-name": "Bio-oil CCS"
