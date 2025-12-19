@@ -1,20 +1,20 @@
 {
-  "timestamp": "2025-12-18T05:21:06.070479",
+  "timestamp": "2025-12-19T05:20:00.725920",
   "api_endpoint": "https://edge.isometric.com/",
   "results": {
     "issuances": {
       "path": "/home/runner/work/vcm-fyi-removal-data/vcm-fyi-removal-data/raw/isometric_issuances.csv",
-      "count": 272,
+      "count": 274,
       "success": true
     },
     "retirements": {
       "path": "/home/runner/work/vcm-fyi-removal-data/vcm-fyi-removal-data/raw/isometric_retirements.csv",
-      "count": 121,
+      "count": 129,
       "success": true
     },
     "projects": {
       "path": "/home/runner/work/vcm-fyi-removal-data/vcm-fyi-removal-data/raw/isometric_projects.csv",
-      "count": 35,
+      "count": 34,
       "success": true
     }
   }

@@ -1,4 +1,6 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,durability,country,country_code,project_status,supplier,pathway,pathway_full
+iss_1KCSQVZYR1S0114X,2025-12-18T22:04:14.204251+00:00,49.53,prj_1K3S0527T1S0KYXT,Hampton Roads WAE Project,ZTF7,OVER_ONE_THOUSAND_YEARS,United States of America,USA,VALIDATED,CREW Carbon,Marine,Marine
+iss_1KCSQS1RJ1S0DX1Q,2025-12-18T22:02:37.775029+00:00,372.52,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,OVER_ONE_THOUSAND_YEARS,United States of America,USA,VALIDATED,CREW Carbon,Marine,Marine
 iss_1KCK6GD6F1S0F3QG,2025-12-16T09:05:22.152056+00:00,1267.15,prj_1JXCRW5ST1S0EEKH,Humboldt Sawmill Company (HSC),HD88,OVER_TWO_HUNDRED_YEARS,United States of America,USA,VALIDATED,Pacific Biochar,BiCRS,Biomass Carbon Removal and Storage
 iss_1KCK6FN6W1S0M54H,2025-12-16T09:04:57.609102+00:00,1775.16,prj_1JXCRW5ST1S0EEKH,Humboldt Sawmill Company (HSC),HD88,OVER_TWO_HUNDRED_YEARS,United States of America,USA,VALIDATED,Pacific Biochar,BiCRS,Biomass Carbon Removal and Storage
 iss_1KC9P98E11S07KVZ,2025-12-12T16:28:40.812068+00:00,1507.98,prj_1H502CZZH1S0VMYW,Nova Scotia Mineral OAE Project,F5X7,OVER_ONE_THOUSAND_YEARS,Canada,CAN,VALIDATED,Planetary,Marine,Marine
