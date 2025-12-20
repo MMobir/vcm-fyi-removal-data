@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-12-19T05:20:00.725920",
+  "timestamp": "2025-12-20T05:18:07.167722",
   "api_endpoint": "https://edge.isometric.com/",
   "results": {
     "issuances": {
       "path": "/home/runner/work/vcm-fyi-removal-data/vcm-fyi-removal-data/raw/isometric_issuances.csv",
-      "count": 274,
+      "count": 276,
       "success": true
     },
     "retirements": {
