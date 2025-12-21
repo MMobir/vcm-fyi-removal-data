@@ -1,4 +1,7 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,supplier,pathway,pathway_full,retired_by,beneficiary,purposes,notes
+ret_1KCYPXS1E1S0QDJT,2025-12-20T20:23:56.242996+00:00,1424.0,prj_1H502CZZH1S0VMYW,Nova Scotia Mineral OAE Project,F5X7,Planetary,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
+ret_1KCYPMDAV1S03RQ5,2025-12-20T20:18:49.350224+00:00,49.0,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,CREW Carbon,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
+ret_1KCYG4W8M1S01GCW,2025-12-20T18:25:28.903198+00:00,1.242,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,Workday,Workday,PUBLIC_ENVIRONMENTAL_CLAIMS,
 ret_1KCSZMWVH1S09ZG9,2025-12-19T00:20:10.310139+00:00,2000.0,prj_1JXCRW5ST1S0EEKH,Humboldt Sawmill Company (HSC),HD88,Pacific Biochar,BiCRS,Biomass Carbon Removal and Storage,Watershed,Block,CORPORATE_TARGETS,"Retirement of environmental credits on behalf of Block, Inc."
 ret_1KCSW2Y2P1S01FYW,2025-12-18T23:17:55.973266+00:00,16.0,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,CREW Carbon,Marine,Marine,Workday,Workday,PUBLIC_ENVIRONMENTAL_CLAIMS,
 ret_1KCSTYVKT1S0AWR2,2025-12-18T22:58:13.795155+00:00,7.0,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,CREW Carbon,Marine,Marine,Autodesk,Autodesk,CORPORATE_TARGETS,
