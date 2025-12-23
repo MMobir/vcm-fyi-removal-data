@@ -1,4 +1,5 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,supplier,pathway,pathway_full,retired_by,beneficiary,purposes,notes
+ret_1KD406TT91S01249,2025-12-22T21:42:22.351671+00:00,0.002,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,Watershed,Block,CORPORATE_TARGETS,"Retirement of environmental credits on behalf of Block, Inc."
 ret_1KCYPXS1E1S0QDJT,2025-12-20T20:23:56.242996+00:00,1424.0,prj_1H502CZZH1S0VMYW,Nova Scotia Mineral OAE Project,F5X7,Planetary,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
 ret_1KCYPMDAV1S03RQ5,2025-12-20T20:18:49.350224+00:00,49.0,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,CREW Carbon,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
 ret_1KCYG4W8M1S01GCW,2025-12-20T18:25:28.903198+00:00,1.242,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,Workday,Workday,PUBLIC_ENVIRONMENTAL_CLAIMS,
