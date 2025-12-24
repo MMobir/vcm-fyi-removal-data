@@ -1,4 +1,6 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,supplier,pathway,pathway_full,retired_by,beneficiary,purposes,notes
+ret_1KD6K0KEC1S03CJ9,2025-12-23T21:49:30.045792+00:00,460.0,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,JPMorganChase,JPMorganChase,CORPORATE_TARGETS,
+ret_1KD64DF4N1S0B1SN,2025-12-23T17:34:22.942964+00:00,258.0,prj_1HHYZFVGW1S044ZY,Great Plains Organic Waste Sequestration,01P4,Vaulted Deep,BiCRS,Biomass Carbon Removal and Storage,Rubicon Carbon,"Cisco Systems, Inc.",CORPORATE_TARGETS,Retired on behalf of Cisco's Scope 1 and 2 operational emissions.
 ret_1KD406TT91S01249,2025-12-22T21:42:22.351671+00:00,0.002,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,Watershed,Block,CORPORATE_TARGETS,"Retirement of environmental credits on behalf of Block, Inc."
 ret_1KCYPXS1E1S0QDJT,2025-12-20T20:23:56.242996+00:00,1424.0,prj_1H502CZZH1S0VMYW,Nova Scotia Mineral OAE Project,F5X7,Planetary,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
 ret_1KCYPMDAV1S03RQ5,2025-12-20T20:18:49.350224+00:00,49.0,prj_1JFA3YY9P1S0YVKR,New England WAE Project,X8KC,CREW Carbon,Marine,Marine,Shopify,Shopify,CORPORATE_TARGETS,
