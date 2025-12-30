@@ -1,4 +1,5 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,durability,country,country_code,project_status,supplier,pathway,pathway_full
+iss_1KDNK479M1S0F973,2025-12-29T17:40:05.067920+00:00,58.54,prj_1JQEQKCF91S06HAJ,Ontario Avenue Bio-Oil Sequestration,GHYZ,OVER_ONE_THOUSAND_YEARS,Canada,CAN,VALIDATED,NULIFE GreenTech,BiCRS,Biomass Carbon Removal and Storage
 iss_1KD3NZKND1S0FH9R,2025-12-22T18:43:39.871165+00:00,2302.76,prj_1J4P33N6W1S0RKE2,Loblolly Project,V093,OVER_ONE_THOUSAND_YEARS,United States of America,USA,VALIDATED,Graphyte,BiCRS,Biomass Carbon Removal and Storage
 iss_1KCW90YXR1S0FKX2,2025-12-19T21:42:32.684328+00:00,4534.37,prj_1HHYZFVGW1S044ZY,Great Plains Organic Waste Sequestration,01P4,OVER_ONE_THOUSAND_YEARS,United States of America,USA,VALIDATED,Vaulted Deep,BiCRS,Biomass Carbon Removal and Storage
 iss_1KCW1PEJB1S01796,2025-12-19T19:34:27.213385+00:00,2285.27,prj_1J4P33N6W1S0RKE2,Loblolly Project,V093,OVER_ONE_THOUSAND_YEARS,United States of America,USA,VALIDATED,Graphyte,BiCRS,Biomass Carbon Removal and Storage
