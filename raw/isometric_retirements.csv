@@ -1,4 +1,5 @@
 id,transaction_date,quantity,project_id,project_name,project_short_code,supplier,pathway,pathway_full,retired_by,beneficiary,purposes,notes
+ret_1KDR9F7DA1S0THMA,2025-12-30T18:49:03.190878+00:00,12.0,prj_1JQEQKCF91S06HAJ,Ontario Avenue Bio-Oil Sequestration,GHYZ,NULIFE GreenTech,BiCRS,Biomass Carbon Removal and Storage,Shopify,Shopify,CORPORATE_TARGETS,
 ret_1KD6K0KEC1S03CJ9,2025-12-23T21:49:30.045792+00:00,460.0,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,JPMorganChase,JPMorganChase,CORPORATE_TARGETS,
 ret_1KD64DF4N1S0B1SN,2025-12-23T17:34:22.942964+00:00,258.0,prj_1HHYZFVGW1S044ZY,Great Plains Organic Waste Sequestration,01P4,Vaulted Deep,BiCRS,Biomass Carbon Removal and Storage,Rubicon Carbon,"Cisco Systems, Inc.",CORPORATE_TARGETS,Retired on behalf of Cisco's Scope 1 and 2 operational emissions.
 ret_1KD406TT91S01249,2025-12-22T21:42:22.351671+00:00,0.002,prj_1HZSSWBQM1S08H83,Charm Bio-oil Geologic Storage,7BDE,Charm Industrial,BiCRS,Biomass Carbon Removal and Storage,Watershed,Block,CORPORATE_TARGETS,"Retirement of environmental credits on behalf of Block, Inc."
